@@ -33,47 +33,96 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-document.addEventListener('DOMContentLoaded', function () {
-    // Before-After Slider functionality
-    const sliders = document.querySelectorAll('.before-after-slider');
-    sliders.forEach(slider => {
-        const handle = slider.querySelector('.slider-handle');
-        const beforeDiv = slider.querySelector('.slider-before');
+// document.addEventListener('DOMContentLoaded', function () {
+//     // Before-After Slider functionality
+//     const sliders = document.querySelectorAll('.before-after-slider');
+//     sliders.forEach(slider => {
+//         const handle = slider.querySelector('.slider-handle');
+//         const beforeDiv = slider.querySelector('.slider-before');
 
-        beforeDiv.style.width = '50%'; // default
-        handle.style.left = '50%'; // default
+//         beforeDiv.style.width = '50%'; // default
+//         handle.style.left = '50%'; // default
         
-        let isDragging = false;
-        let currentSlider = null;
-        const moveHandle = (e) => {
-            if (!isDragging || !currentSlider) return;
-            e.preventDefault();
-            const sliderRect = currentSlider.getBoundingClientRect();
-            const clientX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
-            let position = (clientX - sliderRect.left) / sliderRect.width;
-            position = Math.max(0, Math.min(1, position));
-            const handleElement = currentSlider.querySelector('.slider-handle');
-            const beforeElement = currentSlider.querySelector('.slider-before');
-            handleElement.style.left = `${position * 100}%`;
-            beforeElement.style.width = `${position * 100}%`;
-        };
-        const startDragging = (e, element) => {
-            isDragging = true;
-            currentSlider = element;
-            moveHandle(e);
-        };
-        const stopDragging = () => {
-            isDragging = false;
-            currentSlider = null;
-        };
-        handle.addEventListener('mousedown', (e) => startDragging(e, slider));
-        handle.addEventListener('touchstart', (e) => startDragging(e, slider));
-        document.addEventListener('mousemove', moveHandle, { passive: false });
-        document.addEventListener('touchmove', moveHandle, { passive: false });
-        document.addEventListener('mouseup', stopDragging);
-        document.addEventListener('touchend', stopDragging);
+//         let isDragging = false;
+//         let currentSlider = null;
+//         const moveHandle = (e) => {
+//             if (!isDragging || !currentSlider) return;
+//             e.preventDefault();
+//             const sliderRect = currentSlider.getBoundingClientRect();
+//             const clientX = e.type.includes('mouse') ? e.clientX : e.touches[0].clientX;
+//             let position = (clientX - sliderRect.left) / sliderRect.width;
+//             position = Math.max(0, Math.min(1, position));
+//             const handleElement = currentSlider.querySelector('.slider-handle');
+//             const beforeElement = currentSlider.querySelector('.slider-before');
+//             handleElement.style.left = `${position * 100}%`;
+//             beforeElement.style.width = `${position * 100}%`;
+//         };
+//         const startDragging = (e, element) => {
+//             isDragging = true;
+//             currentSlider = element;
+//             moveHandle(e);
+//         };
+//         const stopDragging = () => {
+//             isDragging = false;
+//             currentSlider = null;
+//         };
+//         handle.addEventListener('mousedown', (e) => startDragging(e, slider));
+//         handle.addEventListener('touchstart', (e) => startDragging(e, slider));
+//         document.addEventListener('mousemove', moveHandle, { passive: false });
+//         document.addEventListener('touchmove', moveHandle, { passive: false });
+//         document.addEventListener('mouseup', stopDragging);
+//         document.addEventListener('touchend', stopDragging);
+//     });
+// });
+
+// gpt slider
+
+document.addEventListener('DOMContentLoaded', () => {
+    const sliders = document.querySelectorAll('.before-after-slider');
+  
+    sliders.forEach(slider => {
+      const handle = slider.querySelector('.slider-handle');
+      const beforeImg = slider.querySelector('.slider-before-image');
+  
+      let isDragging = false;
+  
+      const updateSlider = (clientX) => {
+        const rect = slider.getBoundingClientRect();
+        let offset = (clientX - rect.left) / rect.width;
+        offset = Math.max(0, Math.min(1, offset));
+        const percent = offset * 100;
+  
+        // Move handle
+        handle.style.left = `${percent}%`;
+  
+        // Update clip path on before image
+        beforeImg.style.clipPath = `inset(0 ${100 - percent}% 0 0)`;
+      };
+  
+      const startDrag = (e) => {
+        isDragging = true;
+        updateSlider(e.type.includes('mouse') ? e.clientX : e.touches[0].clientX);
+      };
+      const drag = (e) => {
+        if (!isDragging) return;
+        updateSlider(e.type.includes('mouse') ? e.clientX : e.touches[0].clientX);
+      };
+      const endDrag = () => {
+        isDragging = false;
+      };
+  
+      handle.addEventListener('mousedown', startDrag);
+      handle.addEventListener('touchstart', startDrag, { passive: true });
+      document.addEventListener('mousemove', drag);
+      document.addEventListener('touchmove', drag, { passive: false });
+      document.addEventListener('mouseup', endDrag);
+      document.addEventListener('touchend', endDrag);
     });
-});
+  });
+  
+
+
+
 
 document.addEventListener('DOMContentLoaded', function () {
     // Consultation Modal Functionality
